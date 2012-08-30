@@ -14,7 +14,7 @@ class CustomThemeController < ActionController::Base
   def hello
     render :text => "Just a test"
   end
-  
+
   def theme_selector
     'custom'
   end
@@ -28,7 +28,7 @@ class PrivateCustomThemeController < ActionController::Base
   end
 
   private
-  
+
   def private_theme_selector
     'private_custom'
   end
@@ -56,29 +56,29 @@ class ApplicationControllerInclusionTest < Test::Unit::TestCase
 end
 
 module ThemesForRails
-  class ActionControllerTest < ::ActionController::TestCase  
+  class ActionControllerTest < ::ActionController::TestCase
     context "at class level" do
-      
+
       should "respond_to theme" do
         assert ApplicationController.respond_to?(:theme)
       end
 
       context "setting the theme with a String" do
-        
+
         tests MyController
-        
+
         should "set the selected theme for all actions" do
           MyController.theme 'default'
           @controller.expects(:set_theme).with('default')
           assert_equal nil, @controller.theme_name
           get :hello
-        end        
+        end
       end
-      
+
       context "setting the theme with a Symbol" do
-        
+
         tests CustomThemeController
-        
+
         should "call the selected private method" do
           CustomThemeController.theme :theme_selector
           get :hello
@@ -112,15 +112,15 @@ module ThemesForRails
       end
 
       context "when a theme has been set" do
-        
+
         tests ApplicationController
 
         should "add the theme's view path to the front of the general view paths" do
           antes = @controller.view_paths.size
-          @controller.theme 'default'  
+          @controller.theme 'default'
           assert_equal antes + 1, @controller.view_paths.size
         end
-        
+
         should "have a proper view path" do
           @controller.theme 'default'
           view_path = @controller.view_paths.first
@@ -133,17 +133,17 @@ module ThemesForRails
     context "using url helpers" do
 
       tests ApplicationController
-      
+
       should "provide url method to access a given stylesheet file in the current theme" do
         @controller.theme 'default'
         assert_equal @controller.send(:current_theme_stylesheet_path, "style"), "/themes/default/stylesheets/style.css"
       end
-      
+
       should "provide url method to access a given javascript file in the current theme" do
         @controller.theme 'default'
         assert_equal @controller.send(:current_theme_javascript_path, "app"), "/themes/default/javascripts/app.js"
       end
-      
+
       should "provide url method to access a given image file in the current theme" do
         @controller.theme 'default'
         assert_equal @controller.send(:current_theme_image_path, "logo.png"), "/themes/default/images/logo.png"
@@ -157,12 +157,12 @@ module ThemesForRails
           @controller.theme 'default'
           assert_equal @controller.send(:current_theme_stylesheet_path, "style.compact"), "/themes/default/stylesheets/style.compact.css"
         end
-        
+
         should "provide url method to access a given javascript file in the current theme" do
           @controller.theme 'default'
           assert_equal @controller.send(:current_theme_javascript_path, "app.min"), "/themes/default/javascripts/app.min.js"
         end
-        
+
       end
 
     end
